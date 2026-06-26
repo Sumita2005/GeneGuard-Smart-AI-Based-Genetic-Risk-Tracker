@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeneGuard - Smart Genetic Risk Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/heroicons@2.0.18/24/outline/index.js" type="module"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'health-primary': '#10B981',
+                        'health-secondary': '#3B82F6',
+                        'health-accent': '#8B5CF6',
+                        'risk-high': '#EF4444',
+                        'risk-medium': '#F59E0B',
+                        'risk-low': '#22C55E',
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #10B981 0%, #3B82F6 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .risk-indicator {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+    <!-- @COMPONENT: App (Main Application Shell) -->
+    <div class="min-h-screen bg-slate-50" data-mock="true">
+        
+        <!-- @COMPONENT: NavigationHeader -->
+        <nav class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-10 h-10 bg-health-primary rounded-lg flex items-center justify-center">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <span class="text-xl font-bold text-slate-900">GeneGuard</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Navigation Menu -->
+                    <div class="hidden md:flex items-center space-x-6">
+                        <a href="#" class="text-health-primary font-medium hover:text-health-secondary transition-colors" data-bind="activeRoute.home">Home</a>
+                        <a href="#" class="text-slate-600 hover:text-health-primary transition-colors" data-bind="activeRoute.tree">Family Tree</a>
+                        <a href="#" class="text-slate-600 hover:text-health-primary transition-colors" data-bind="activeRoute.risk">Risk Analysis</a>
+                        <a href="#" class="text-slate-600 hover:text-health-primary transition-colors" data-bind="activeRoute.passport">Health Passport</a>
+                        <a href="#" class="text-slate-600 hover:text-health-primary transition-colors" data-bind="activeRoute.settings">Settings</a>
+                    </div>
+
+                    <!-- Language Selector -->
+                    <div class="flex items-center space-x-4">
+                        <select class="text-sm border border-slate-300 rounded-md px-3 py-1 bg-white focus:outline-none focus:ring-2 focus:ring-health-primary focus:border-health-primary" data-bind="selectedLanguage">
+                            <option value="en">English</option>
+                            <option value="hi" data-mock="true">हिंदी</option>
+                            <option value="bn" data-mock="true">বাংলা</option>
+                        </select>
+                        
+                        <!-- User Profile -->
+                        <div class="flex items-center space-x-2">
+                            <div class="w-8 h-8 bg-health-secondary rounded-full flex items-center justify-center">
+                                <span class="text-white text-sm font-medium" data-bind="user.initials">JD</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <!-- @END_COMPONENT: NavigationHeader -->
+
+        <!-- @COMPONENT: LandingPage -->
+        <main class="flex-1">
+            <!-- Hero Section -->
+            <section class="gradient-bg text-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        <div class="space-y-8">
+                            <div class="space-y-4">
+                                <h1 class="text-4xl md:text-6xl font-bold leading-tight">
+                                    Track Genetic Risks.<br>
+                                    <span class="text-emerald-200">Empower Preventive Health.</span>
+                                </h1>
+                                <p class="text-xl text-emerald-100 max-w-lg">
+                                    Build your family medical history, assess genetic risks using AI, and receive personalized health insights to stay ahead of potential health issues.
+                                </p>
+                            </div>
+                            
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <button class="bg-white text-health-primary px-8 py-4 rounded-lg font-semibold hover:bg-slate-50 transition-colors shadow-lg" data-event="click:startOnboarding">
+                                    Get Started Free
+                                </button>
+                                <button class="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-health-primary transition-colors" data-event="click:watchDemo">
+                                    Watch Demo
+                                </button>
+                            </div>
+
+                            <!-- Trust Indicators -->
+                            <div class="flex items-center space-x-6 pt-8">
+                                <div class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5 text-emerald-200" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    <span class="text-sm text-emerald-200">HIPAA Compliant</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5 text-emerald-200" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    <span class="text-sm text-emerald-200">End-to-End Encrypted</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5 text-emerald-200" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <span class="text-sm text-emerald-200">AI-Powered Insights</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="relative">
+                            <!-- Hero Image with medical technology theme -->
+                            <!-- A modern medical consultation with a doctor using digital health technology and genetic analysis on a tablet -->
+                            <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" alt="Medical consultation with digital health technology" class="rounded-2xl shadow-2xl w-full h-auto" />
+                            
+                            <!-- Floating Cards for Visual Appeal -->
+                            <div class="absolute -top-4 -right-4 bg-white p-4 rounded-lg shadow-lg">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-3 h-3 bg-risk-low rounded-full risk-indicator"></div>
+                                    <span class="text-sm font-medium text-slate-700">Low Risk</span>
+                                </div>
+                            </div>
+                            
+                            <div class="absolute -bottom-4 -left-4 bg-white p-4 rounded-lg shadow-lg">
+                                <div class="flex items-center space-x-3">
+                                    <svg class="w-8 h-8 text-health-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                    </svg>
+                                    <div>
+                                        <div class="text-sm font-medium text-slate-700">Family Analysis</div>
+                                        <div class="text-xs text-slate-500">12 members tracked</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section class="py-20 bg-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+                            Comprehensive Genetic Health Tracking
+                        </h2>
+                        <p class="text-xl text-slate-600 max-w-3xl mx-auto">
+                            From family tree building to AI-powered risk analysis, GeneGuard provides everything you need for proactive health management.
+                        </p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <!-- Feature 1: Family Tree Builder -->
+                        <div class="bg-slate-50 rounded-xl p-8 card-hover">
+                            <div class="w-12 h-12 bg-health-primary rounded-lg flex items-center justify-center mb-6">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-slate-900 mb-3">Interactive Family Tree</h3>
+                            <p class="text-slate-600 mb-4">Build a comprehensive family medical history with our intuitive drag-and-drop interface.</p>
+                            <ul class="text-sm text-slate-500 space-y-1">
+                                <li>• Add unlimited family members</li>
+                                <li>• Track medical conditions</li>
+                                <li>• Visual relationship mapping</li>
+                            </ul>
+                        </div>
+
+                        <!-- Feature 2: AI Risk Analysis -->
+                        <div class="bg-slate-50 rounded-xl p-8 card-hover">
+                            <div class="w-12 h-12 bg-health-secondary rounded-lg flex items-center justify-center mb-6">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-slate-900 mb-3">AI-Powered Risk Analysis</h3>
+                            <p class="text-slate-600 mb-4">Get intelligent risk assessments based on family history and lifestyle factors.</p>
+                            <ul class="text-sm text-slate-500 space-y-1">
+                                <li>• Real-time risk scoring</li>
+                                <li>• Color-coded indicators</li>
+                                <li>• Evidence-based algorithms</li>
+                            </ul>
+                        </div>
+
+                        <!-- Feature 3: Health Passport -->
+                        <div class="bg-slate-50 rounded-xl p-8 card-hover">
+                            <div class="w-12 h-12 bg-health-accent rounded-lg flex items-center justify-center mb-6">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-slate-900 mb-3">Digital Health Passport</h3>
+                            <p class="text-slate-600 mb-4">Generate comprehensive health reports with QR codes for easy sharing with healthcare providers.</p>
+                            <ul class="text-sm text-slate-500 space-y-1">
+                                <li>• PDF export functionality</li>
+                                <li>• QR code integration</li>
+                                <li>• Secure doctor sharing</li>
+                            </ul>
+                        </div>
+
+                        <!-- Feature 4: Personalized Recommendations -->
+                        <div class="bg-slate-50 rounded-xl p-8 card-hover">
+                            <div class="w-12 h-12 bg-emerald-500 rounded-lg flex items-center justify-center mb-6">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-slate-900 mb-3">Smart Recommendations</h3>
+                            <p class="text-slate-600 mb-4">Receive personalized lifestyle and screening recommendations based on your risk profile.</p>
+                            <ul class="text-sm text-slate-500 space-y-1">
+                                <li>• Preventive care reminders</li>
+                                <li>• Lifestyle optimization tips</li>
+                                <li>• Screening schedules</li>
+                            </ul>
+                        </div>
+
+                        <!-- Feature 5: Family Timeline -->
+                        <div class="bg-slate-50 rounded-xl p-8 card-hover">
+                            <div class="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center mb-6">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-slate-900 mb-3">Family Health Timeline</h3>
+                            <p class="text-slate-600 mb-4">Track major health events across your family timeline for better pattern recognition.</p>
+                            <ul class="text-sm text-slate-500 space-y-1">
+                                <li>• Chronological health events</li>
+                                <li>• Pattern identification</li>
+                                <li>• Interactive timeline view</li>
+                            </ul>
+                        </div>
+
+                        <!-- Feature 6: AI Health Assistant -->
+                        <div class="bg-slate-50 rounded-xl p-8 card-hover">
+                            <div class="w-12 h-12 bg-pink-500 rounded-lg flex items-center justify-center mb-6">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-slate-900 mb-3">AI Health Assistant</h3>
+                            <p class="text-slate-600 mb-4">Get instant answers to your health questions through our intelligent chatbot.</p>
+                            <ul class="text-sm text-slate-500 space-y-1">
+                                <li>• 24/7 health guidance</li>
+                                <li>• Symptom assessment</li>
+                                <li>• Medical terminology help</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- User Profile Setup Section (Mock) -->
+            <section class="py-20 bg-slate-50" data-route="profile-setup">
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <!-- Progress Indicator -->
+                    <div class="mb-12">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-sm font-medium text-health-primary">Step 1 of 4</span>
+                            <span class="text-sm text-slate-500">Profile Setup</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-2">
+                            <div class="bg-health-primary h-2 rounded-full" style="width: 25%"></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-lg p-8">
+                        <div class="mb-8">
+                            <h2 class="text-2xl font-bold text-slate-900 mb-2">Let's Get Started</h2>
+                            <p class="text-slate-600">Tell us about yourself to create your personalized health profile.</p>
+                        </div>
+
+                        <form class="space-y-6" data-implementation="Handle form submission and validation">
+                            <!-- Basic Information -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Full Name *</label>
+                                    <input type="text" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-health-primary focus:border-health-primary" placeholder="Enter your full name" data-bind="profile.name">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Age *</label>
+                                    <select class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-health-primary focus:border-health-primary" data-bind="profile.age">
+                                        <option value="">Select age range</option>
+                                        <option value="18-25">18-25</option>
+                                        <option value="26-35">26-35</option>
+                                        <option value="36-45">36-45</option>
+                                        <option value="46-55">46-55</option>
+                                        <option value="56-65">56-65</option>
+                                        <option value="65+">65+</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Gender Selection -->
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-3">Gender *</label>
+                                <div class="flex gap-4">
+                                    <label class="flex items-center">
+                                        <input type="radio" name="gender" value="male" class="sr-only" data-bind="profile.gender">
+                                        <div class="w-4 h-4 border-2 border-slate-300 rounded-full mr-2 flex items-center justify-center">
+                                            <div class="w-2 h-2 bg-health-primary rounded-full opacity-0"></div>
+                                        </div>
+                                        <span class="text-sm text-slate-700">Male</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="gender" value="female" class="sr-only" data-bind="profile.gender">
+                                        <div class="w-4 h-4 border-2 border-slate-300 rounded-full mr-2 flex items-center justify-center">
+                                            <div class="w-2 h-2 bg-health-primary rounded-full opacity-0"></div>
+                                        </div>
+                                        <span class="text-sm text-slate-700">Female</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="gender" value="other" class="sr-only" data-bind="profile.gender">
+                                        <div class="w-4 h-4 border-2 border-slate-300 rounded-full mr-2 flex items-center justify-center">
+                                            <div class="w-2 h-2 bg-health-primary rounded-full opacity-0"></div>
+                                        </div>
+                                        <span class="text-sm text-slate-700">Other</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Medical History -->
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-3">Current Health Conditions</label>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    <!-- @MAP: medicalConditions.map(condition => ( -->
+                                    <label class="flex items-center p-3 border border-slate-200 rounded-lg hover:bg-slate-50">
+                                        <input type="checkbox" class="mr-3 text-health-primary focus:ring-health-primary" data-bind="profile.conditions" value="diabetes">
+                                        <span class="text-sm text-slate-700">Diabetes</span>
+                                    </label>
+                                    <label class="flex items-center p-3 border border-slate-200 rounded-lg hover:bg-slate-50">
+                                        <input type="checkbox" class="mr-3 text-health-primary focus:ring-health-primary" data-bind="profile.conditions" value="heart_disease">
+                                        <span class="text-sm text-slate-700">Heart Disease</span>
+                                    </label>
+                                    <label class="flex items-center p-3 border border-slate-200 rounded-lg hover:bg-slate-50">
+                                        <input type="checkbox" class="mr-3 text-health-primary focus:ring-health-primary" data-bind="profile.conditions" value="high_blood_pressure">
+                                        <span class="text-sm text-slate-700">High Blood Pressure</span>
+                                    </label>
+                                    <label class="flex items-center p-3 border border-slate-200 rounded-lg hover:bg-slate-50">
+                                        <input type="checkbox" class="mr-3 text-health-primary focus:ring-health-primary" data-bind="profile.conditions" value="cancer">
+                                        <span class="text-sm text-slate-700">Cancer</span>
+                                    </label>
+                                    <!-- @END_MAP )) -->
+                                </div>
+                            </div>
+
+                            <!-- Lifestyle Factors -->
+                            <div class="space-y-6">
+                                <h3 class="text-lg font-semibold text-slate-900">Lifestyle Information</h3>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-2">Smoking Status</label>
+                                        <select class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-health-primary focus:border-health-primary" data-bind="profile.smokingStatus">
+                                            <option value="never">Never smoked</option>
+                                            <option value="former">Former smoker</option>
+                                            <option value="current">Current smoker</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-2">Exercise Level</label>
+                                        <select class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-health-primary focus:border-health-primary" data-bind="profile.exerciseLevel">
+                                            <option value="low">Low (0-1 days/week)</option>
+                                            <option value="moderate">Moderate (2-4 days/week)</option>
+                                            <option value="high">High (5+ days/week)</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-2">Diet Type</label>
+                                        <select class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-health-primary focus:border-health-primary" data-bind="profile.dietType">
+                                            <option value="balanced">Balanced</option>
+                                            <option value="vegetarian">Vegetarian</option>
+                                            <option value="vegan">Vegan</option>
+                                            <option value="keto">Keto</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="flex justify-between pt-8">
+                                <button type="button" class="px-6 py-3 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors" data-event="click:goBack">
+                                    Back
+                                </button>
+                                <button type="submit" class="px-8 py-3 bg-health-primary text-white rounded-lg hover:bg-emerald-600 transition-colors" data-event="click:continueToFamilyTree">
+                                    Continue to Family Tree
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Family Tree Builder Section -->
+            <section class="py-20 bg-white" data-route="family-tree">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <!-- Progress Indicator -->
+                    <div class="mb-12">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-sm font-medium text-health-primary">Step 2 of 4</span>
+                            <span class="text-sm text-slate-500">Family Tree Builder</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-2">
+                            <div class="bg-health-primary h-2 rounded-full" style="width: 50%"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-8">
+                        <h2 class="text-3xl font-bold text-slate-900 mb-4">Build Your Family Medical History</h2>
+                        <p class="text-slate-600 max-w-2xl">Add family members and their medical information to help us assess your genetic risks more accurately.</p>
+                    </div>
+
+                    <!-- Family Tree Controls -->
+                    <div class="bg-slate-50 rounded-xl p-6 mb-8">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div class="flex items-center space-x-4">
+                                <button class="bg-health-primary text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition-colors flex items-center space-x-2" data-event="click:addFamilyMember">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                    <span>Add Family Member</span>
+                                </button>
+                                
+                                <select class="px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-health-primary focus:border-health-primary" data-bind="treeView">
+                                    <option value="visual">Visual Tree</option>
+                                    <option value="list">List View</option>
+                                    <option value="timeline">Timeline View</option>
+                                </select>
+                            </div>
+                            
+                            <div class="flex items-center space-x-2 text-sm text-slate-600">
+                                <span class="inline-flex items-center px-2 py-1 bg-risk-low text-white rounded-full text-xs">
+                                    <span class="w-2 h-2 bg-white rounded-full mr-1"></span>
+                                    Low Risk
+                                </span>
+                                <span class="inline-flex items-center px-2 py-1 bg-risk-medium text-white rounded-full text-xs">
+                                    <span class="w-2 h-2 bg-white rounded-full mr-1"></span>
+                                    Medium Risk
+                                </span>
+                                <span class="inline-flex items-center px-2 py-1 bg-risk-high text-white rounded-full text-xs">
+                                    <span class="w-2 h-2 bg-white rounded-full mr-1"></span>
+                                    High Risk
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Family Tree Visualization -->
+                    <div class="bg-white rounded-xl border border-slate-200 p-8 mb-8">
+                        <!-- @COMPONENT: FamilyTreeVisualization -->
+                        <div class="family-tree-container" data-implementation="Interactive family tree with drag-and-drop functionality">
+                            <!-- User (Center) -->
+                            <div class="flex flex-col items-center mb-12">
+                                <div class="relative">
+                                    <div class="w-32 h-32 bg-health-primary rounded-full flex items-center justify-center shadow-lg">
+                                        <div class="text-center text-white">
+                                            <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-2">
+                                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                                                </svg>
+                                            </div>
+                                            <div class="text-xs font-medium" data-bind="user.name">You</div>
+                                        </div>
+                                    </div>
+                                    <div class="absolute -top-2 -right-2 w-6 h-6 bg-risk-low rounded-full flex items-center justify-center">
+                                        <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="mt-3 text-center">
+                                    <div class="font-semibold text-slate-900" data-bind="user.name">John Doe</div>
+                                    <div class="text-sm text-slate-500" data-bind="user.age">32 years</div>
+                                </div>
+                            </div>
+
+                            <!-- Parents Row -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                                <!-- @MAP: parents.map(parent => ( -->
+                                <div class="flex flex-col items-center">
+                                    <div class="relative">
+                                        <div class="w-24 h-24 bg-slate-200 rounded-full flex items-center justify-center shadow-md card-hover cursor-pointer" data-event="click:editFamilyMember" data-member-id="parent-1">
+                                            <div class="text-center text-slate-600">
+                                                <svg class="w-6 h-6 mx-auto mb-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                                                </svg>
+                                                <div class="text-xs">Father</div>
+                                            </div>
+                                        </div>
+                                        <div class="absolute -top-1 -right-1 w-5 h-5 bg-risk-medium rounded-full"></div>
+                                    </div>
+                                    <div class="mt-2 text-center">
+                                        <div class="font-medium text-slate-900" data-bind="parent.name">Robert Doe</div>
+                                        <div class="text-xs text-slate-500" data-bind="parent.age">62 years</div>
+                                        <div class="text-xs text-risk-medium font-medium">Diabetes</div>
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col items-center">
+                                    <div class="relative">
+                                        <div class="w-24 h-24 bg-slate-200 rounded-full flex items-center justify-center shadow-md card-hover cursor-pointer" data-event="click:editFamilyMember" data-member-id="parent-2">
+                                            <div class="text-center text-slate-600">
+                                                <svg class="w-6 h-6 mx-auto mb-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                                                </svg>
+                                                <div class="text-xs">Mother</div>
+                                            </div>
+                                        </div>
+                                        <div class="absolute -top-1 -right-1 w-5 h-5 bg-risk-low rounded-full"></div>
+                                    </div>
+                                    <div class="mt-2 text-center">
+                                        <div class="font-medium text-slate-900" data-bind="parent.name">Mary Doe</div>
+                                        <div class="text-xs text-slate-500" data-bind="parent.age">58 years</div>
+                                        <div class="text-xs text-risk-low font-medium">Healthy</div>
+                                    </div>
+                                </div>
+                                <!-- @END_MAP )) -->
+                            </div>
+
+                            <!-- Grandparents Row -->
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+                                <!-- @MAP: grandparents.map(grandparent => ( -->
+                                <div class="flex flex-col items-center">
+                                    <div class="relative">
+                                        <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center shadow-sm card-hover cursor-pointer border-2 border-dashed border-slate-300" data-event="click:addGrandparent">
+                                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 text-center">
+                                        <div class="text-xs text-slate-500">Paternal<br>Grandfather</div>
+                                    </div>
+                                </div>
+                                <!-- @END_MAP )) -->
+                            </div>
+
+                            <!-- Siblings Row -->
+                            <div class="flex justify-center">
+                                <div class="flex space-x-6">
+                                    <div class="flex flex-col items-center">
+                                        <div class="relative">
+                                            <div class="w-20 h-20 bg-health-secondary rounded-full flex items-center justify-center shadow-md">
+                                                <div class="text-center text-white">
+                                                    <svg class="w-5 h-5 mx-auto mb-1" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    <div class="text-xs">Sister</div>
+                                                </div>
+                                            </div>
+                                            <div class="absolute -top-1 -right-1 w-5 h-5 bg-risk-high rounded-full"></div>
+                                        </div>
+                                        <div class="mt-2 text-center">
+                                            <div class="font-medium text-slate-900" data-bind="sibling.name">Sarah Doe</div>
+                                            <div class="text-xs text-slate-500" data-bind="sibling.age">28 years</div>
+                                            <div class="text-xs text-risk-high font-medium">Breast Cancer</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- @END_COMPONENT: FamilyTreeVisualization -->
+                    </div>
+
+                    <!-- Family Timeline View (Alternative) -->
+                    <div class="bg-slate-50 rounded-xl p-8 mb-8" data-view="timeline" style="display: none;">
+                        <h3 class="text-xl font-semibold text-slate-900 mb-6">Family Health Timeline</h3>
+                        
+                        <div class="space-y-6">
+                            <!-- @MAP: familyEvents.map(event => ( -->
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0 w-12 h-12 bg-health-primary rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                                    <span data-bind="event.year">1990</span>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="bg-white rounded-lg p-4 shadow-sm">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <h4 class="font-semibold text-slate-900" data-bind="event.member">Robert Doe</h4>
+                                            <span class="text-xs text-slate-500" data-bind="event.age">Age 35</span>
+                                        </div>
+                                        <p class="text-slate-600 text-sm" data-bind="event.condition">Diagnosed with Type 2 Diabetes</p>
+                                        <div class="mt-2">
+                                            <span class="inline-flex items-center px-2 py-1 bg-risk-medium text-white rounded-full text-xs">
+                                                Medium Impact
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- @END_MAP )) -->
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex justify-between">
+                        <button type="button" class="px-6 py-3 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors" data-event="click:goBack">
+                            Back to Profile
+                        </button>
+                        <button type="button" class="px-8 py-3 bg-health-primary text-white rounded-lg hover:bg-emerald-600 transition-colors" data-event="click:continueToRiskAnalysis">
+                            Continue to Risk Analysis
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Risk Analysis Section -->
+            <section class="py-20 bg-slate-50" data-route="risk-analysis">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <!-- Progress Indicator -->
+                    <div class="mb-12">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-sm font-medium text-health-primary">Step 3 of 4</span>
+                            <span class="text-sm text-slate-500">Risk Analysis</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-2">
+                            <div class="bg-health-primary h-2 rounded-full" style="width: 75%"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-8">
+                        <h2 class="text-3xl font-bold text-slate-900 mb-4">Your Genetic Risk Assessment</h2>
+                        <p class="text-slate-600 max-w-2xl">Based on your family medical history and lifestyle factors, here's your personalized risk analysis.</p>
+                    </div>
+
+                    <!-- Overall Risk Summary -->
+                    <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <!-- Risk Score Visualization -->
+                            <div>
+                                <h3 class="text-xl font-semibold text-slate-900 mb-6">Overall Risk Score</h3>
+                                
+                                <!-- @COMPONENT: RiskScoreChart (Using Recharts in real implementation) -->
+                                <div class="relative w-64 h-64 mx-auto" data-implementation="Replace with Recharts circular progress chart">
+                                    <div class="w-64 h-64 rounded-full border-8 border-slate-200 relative">
+                                        <div class="absolute inset-0 rounded-full border-8 border-transparent border-t-risk-medium border-r-risk-medium transform -rotate-90" style="border-width: 8px; clip-path: circle(50% at 50% 50%);"></div>
+                                        <div class="absolute inset-0 flex items-center justify-center flex-col">
+                                            <div class="text-4xl font-bold text-risk-medium" data-bind="overallRiskScore">65</div>
+                                            <div class="text-sm text-slate-600">Risk Score</div>
+                                            <div class="text-xs text-slate-500 mt-1">Medium Risk</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- @END_COMPONENT: RiskScoreChart -->
+                                
+                                <div class="text-center mt-4">
+                                    <p class="text-sm text-slate-600">Based on family history and lifestyle factors</p>
+                                </div>
+                            </div>
+
+                            <!-- Risk Breakdown -->
+                            <div>
+                                <h3 class="text-xl font-semibold text-slate-900 mb-6">Risk Breakdown by Condition</h3>
+                                
+                                <div class="space-y-4">
+                                    <!-- @MAP: riskConditions.map(condition => ( -->
+                                    <div class="bg-slate-50 rounded-lg p-4">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="font-medium text-slate-900" data-bind="condition.name">Diabetes Type 2</span>
+                                            <span class="px-3 py-1 bg-risk-high text-white text-xs rounded-full font-medium" data-bind="condition.riskLevel">High</span>
+                                        </div>
+                                        <div class="w-full bg-slate-200 rounded-full h-2 mb-2">
+                                            <div class="bg-risk-high h-2 rounded-full" data-bind="condition.percentage" style="width: 85%"></div>
+                                        </div>
+                                        <div class="text-sm text-slate-600" data-bind="condition.reasoning">
+                                            2 first-degree relatives with diabetes, lifestyle factors
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-slate-50 rounded-lg p-4">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="font-medium text-slate-900" data-bind="condition.name">Heart Disease</span>
+                                            <span class="px-3 py-1 bg-risk-medium text-white text-xs rounded-full font-medium" data-bind="condition.riskLevel">Medium</span>
+                                        </div>
+                                        <div class="w-full bg-slate-200 rounded-full h-2 mb-2">
+                                            <div class="bg-risk-medium h-2 rounded-full" data-bind="condition.percentage" style="width: 60%"></div>
+                                        </div>
+                                        <div class="text-sm text-slate-600" data-bind="condition.reasoning">
+                                            Family history present, moderate exercise level
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-slate-50 rounded-lg p-4">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="font-medium text-slate-900" data-bind="condition.name">Breast Cancer</span>
+                                            <span class="px-3 py-1 bg-risk-high text-white text-xs rounded-full font-medium" data-bind="condition.riskLevel">High</span>
+                                        </div>
+                                        <div class="w-full bg-slate-200 rounded-full h-2 mb-2">
+                                            <div class="bg-risk-high h-2 rounded-full" data-bind="condition.percentage" style="width: 78%"></div>
+                                        </div>
+                                        <div class="text-sm text-slate-600" data-bind="condition.reasoning">
+                                            Sister diagnosed at young age, genetic predisposition
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-slate-50 rounded-lg p-4">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="font-medium text-slate-900" data-bind="condition.name">Alzheimer's Disease</span>
+                                            <span class="px-3 py-1 bg-risk-low text-white text-xs rounded-full font-medium" data-bind="condition.riskLevel">Low</span>
+                                        </div>
+                                        <div class="w-full bg-slate-200 rounded-full h-2 mb-2">
+                                            <div class="bg-risk-low h-2 rounded-full" data-bind="condition.percentage" style="width: 25%"></div>
+                                        </div>
+                                        <div class="text-sm text-slate-600" data-bind="condition.reasoning">
+                                            No significant family history, healthy lifestyle
+                                        </div>
+                                    </div>
+                                    <!-- @END_MAP )) -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Risk Analysis -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                        <!-- Genetic Factors -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex items-center space-x-3 mb-6">
+                                <div class="w-10 h-10 bg-health-accent rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-lg font-semibold text-slate-900">Genetic Factors</h3>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-slate-600">Family History Impact</span>
+                                    <span class="px-2 py-1 bg-risk-high text-white text-xs rounded-full">High</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-slate-600">Hereditary Patterns</span>
+                                    <span class="px-2 py-1 bg-risk-medium text-white text-xs rounded-full">Medium</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-slate-600">Age of Onset</span>
+                                    <span class="px-2 py-1 bg-risk-medium text-white text-xs rounded-full">Medium</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lifestyle Factors -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex items-center space-x-3 mb-6">
+                                <div class="w-10 h-10 bg-health-primary rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-lg font-semibold text-slate-900">Lifestyle Factors</h3>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-slate-600">Exercise Level</span>
+                                    <span class="px-2 py-1 bg-risk-low text-white text-xs rounded-full">Good</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-slate-600">Diet Quality</span>
+                                    <span class="px-2 py-1 bg-risk-medium text-white text-xs rounded-full">Fair</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-slate-600">Smoking Status</span>
+                                    <span class="px-2 py-1 bg-risk-low text-white text-xs rounded-full">Never</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Environmental Factors -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <div class="flex items-center space-x-3 mb-6">
+                                <div class="w-10 h-10 bg-health-secondary rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-lg font-semibold text-slate-900">Environmental</h3>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-slate-600">Stress Level</span>
+                                    <span class="px-2 py-1 bg-risk-medium text-white text-xs rounded-full">Medium</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-slate-600">Sleep Quality</span>
+                                    <span class="px-2 py-1 bg-risk-low text-white text-xs rounded-full">Good</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-slate-600">Occupation Risk</span>
+                                    <span class="px-2 py-1 bg-risk-low text-white text-xs rounded-full">Low</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Insights -->
+                    <div class="bg-gradient-to-r from-health-primary to-health-secondary rounded-2xl p-8 text-white mb-8">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold mb-3">AI Health Insights</h3>
+                                <div class="space-y-2 text-emerald-100">
+                                    <p>• Your diabetes risk is elevated due to strong family history. Consider regular monitoring and lifestyle modifications.</p>
+                                    <p>• Early-onset breast cancer in your sister suggests genetic screening may be beneficial.</p>
+                                    <p>• Your healthy lifestyle choices are helping to mitigate several hereditary risks.</p>
+                                    <p>• Consider discussing preventive measures with your healthcare provider within the next 3 months.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex justify-between">
+                        <button type="button" class="px-6 py-3 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors" data-event="click:goBack">
+                            Back to Family Tree
+                        </button>
+                        <button type="button" class="px-8 py-3 bg-health-primary text-white rounded-lg hover:bg-emerald-600 transition-colors" data-event="click:continueToRecommendations">
+                            View Recommendations
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Personalized Recommendations Section -->
+            <section class="py-20 bg-white" data-route="recommendations">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="mb-8">
+                        <h2 class="text-3xl font-bold text-slate-900 mb-4">Personalized Health Recommendations</h2>
+                        <p class="text-slate-600 max-w-2xl">Based on your risk analysis, here are tailored recommendations to help you stay healthy and reduce your genetic risks.</p>
+                    </div>
+
+                    <!-- Preventive To-Do List -->
+                    <div class="bg-slate-50 rounded-2xl p-8 mb-8">
+                        <div class="flex items-center space-x-3 mb-6">
+                            <div class="w-10 h-10 bg-health-primary rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-slate-900">Your Preventive To-Do List</h3>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- @MAP: todoItems.map(item => ( -->
+                            <div class="bg-white rounded-lg p-4 shadow-sm border border-slate-200">
+                                <div class="flex items-start space-x-3">
+                                    <input type="checkbox" class="mt-1 text-health-primary focus:ring-health-primary" data-bind="todo.completed">
+                                    <div class="flex-1">
+                                        <h4 class="font-medium text-slate-900" data-bind="todo.title">Schedule annual diabetes screening</h4>
+                                        <p class="text-sm text-slate-600 mt-1" data-bind="todo.description">Due to family history, get HbA1c and glucose tolerance tests</p>
+                                        <div class="flex items-center mt-2">
+                                            <span class="px-2 py-1 bg-risk-high text-white text-xs rounded-full" data-bind="todo.priority">High Priority</span>
+                                            <span class="text-xs text-slate-500 ml-2" data-bind="todo.dueDate">Due: Next 30 days</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-lg p-4 shadow-sm border border-slate-200">
+                                <div class="flex items-start space-x-3">
+                                    <input type="checkbox" class="mt-1 text-health-primary focus:ring-health-primary" data-bind="todo.completed">
+                                    <div class="flex-1">
+                                        <h4 class="font-medium text-slate-900" data-bind="todo.title">Genetic counseling consultation</h4>
+                                        <p class="text-sm text-slate-600 mt-1" data-bind="todo.description">Discuss BRCA testing due to family cancer history</p>
+                                        <div class="flex items-center mt-2">
+                                            <span class="px-2 py-1 bg-risk-high text-white text-xs rounded-full" data-bind="todo.priority">High Priority</span>
+                                            <span class="text-xs text-slate-500 ml-2" data-bind="todo.dueDate">Due: Next 60 days</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-lg p-4 shadow-sm border border-slate-200">
+                                <div class="flex items-start space-x-3">
+                                    <input type="checkbox" class="mt-1 text-health-primary focus:ring-health-primary" data-bind="todo.completed" checked>
+                                    <div class="flex-1">
+                                        <h4 class="font-medium text-slate-900" data-bind="todo.title">Nutritionist consultation</h4>
+                                        <p class="text-sm text-slate-600 mt-1" data-bind="todo.description">Create diabetes-prevention meal plan</p>
+                                        <div class="flex items-center mt-2">
+                                            <span class="px-2 py-1 bg-risk-medium text-white text-xs rounded-full" data-bind="todo.priority">Medium Priority</span>
+                                            <span class="text-xs text-slate-500 ml-2" data-bind="todo.dueDate">Completed</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-lg p-4 shadow-sm border border-slate-200">
+                                <div class="flex items-start space-x-3">
+                                    <input type="checkbox" class="mt-1 text-health-primary focus:ring-health-primary" data-bind="todo.completed">
+                                    <div class="flex-1">
+                                        <h4 class="font-medium text-slate-900" data-bind="todo.title">Increase physical activity</h4>
+                                        <p class="text-sm text-slate-600 mt-1" data-bind="todo.description">Add 2 more cardio sessions per week</p>
+                                        <div class="flex items-center mt-2">
+                                            <span class="px-2 py-1 bg-risk-low text-white text-xs rounded-full" data-bind="todo.priority">Low Priority</span>
+                                            <span class="text-xs text-slate-500 ml-2" data-bind="todo.dueDate">Ongoing</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- @END_MAP )) -->
+                        </div>
+                    </div>
+
+                    <!-- Recommendation Categories -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <!-- Lifestyle Recommendations -->
+                        <div class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                            <div class="w-12 h-12 bg-health-primary rounded-lg flex items-center justify-center mb-6">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-slate-900 mb-4">Lifestyle Modifications</h3>
+                            
+                            <div class="space-y-4">
+                                <div class="border-l-4 border-health-primary pl-4">
+                                    <h4 class="font-medium text-slate-900">Dietary Changes</h4>
+                                    <p class="text-sm text-slate-600 mt-1">Reduce refined sugar intake by 50%. Focus on high-fiber foods and lean proteins.</p>
+                                </div>
+                                
+                                <div class="border-l-4 border-health-primary pl-4">
+                                    <h4 class="font-medium text-slate-900">Exercise Plan</h4>
+                                    <p class="text-sm text-slate-600 mt-1">Add 150 minutes of moderate cardio weekly. Include strength training 2x per week.</p>
+                                </div>
+                                
+                                <div class="border-l-4 border-health-primary pl-4">
+                                    <h4 class="font-medium text-slate-900">Stress Management</h4>
+                                    <p class="text-sm text-slate-600 mt-1">Practice mindfulness or meditation for 10 minutes daily to reduce cortisol levels.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Screening Schedule -->
+                        <div class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                            <div class="w-12 h-12 bg-health-secondary rounded-lg flex items-center justify-center mb-6">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-slate-900 mb-4">Screening Schedule</h3>
+                            
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                                    <div>
+                                        <div class="font-medium text-slate-900">Diabetes Screening</div>
+                                        <div class="text-sm text-slate-500">HbA1c, Glucose</div>
+                                    </div>
+                                    <div class="text-sm font-medium text-health-primary">Every 6 months</div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                                    <div>
+                                        <div class="font-medium text-slate-900">Breast Cancer Screening</div>
+                                        <div class="text-sm text-slate-500">Mammography, MRI</div>
+                                    </div>
+                                    <div class="text-sm font-medium text-health-primary">Annually</div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                                    <div>
+                                        <div class="font-medium text-slate-900">Cardiovascular Check</div>
+                                        <div class="text-sm text-slate-500">Lipid panel, EKG</div>
+                                    </div>
+                                    <div class="text-sm font-medium text-health-primary">Every 2 years</div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                                    <div>
+                                        <div class="font-medium text-slate-900">Comprehensive Physical</div>
+                                        <div class="text-sm text-slate-500">General health assessment</div>
+                                    </div>
+                                    <div class="text-sm font-medium text-health-primary">Annually</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Doctor Consultations -->
+                        <div class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                            <div class="w-12 h-12 bg-health-accent rounded-lg flex items-center justify-center mb-6">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-slate-900 mb-4">Specialist Consultations</h3>
+                            
+                            <div class="space-y-4">
+                                <div class="border-l-4 border-risk-high pl-4">
+                                    <h4 class="font-medium text-slate-900">Genetic Counselor</h4>
+                                    <p class="text-sm text-slate-600 mt-1">BRCA1/2 testing consultation due to family cancer history.</p>
+                                    <span class="inline-block mt-2 text-xs bg-risk-high text-white px-2 py-1 rounded-full">High Priority</span>
+                                </div>
+                                
+                                <div class="border-l-4 border-risk-medium pl-4">
+                                    <h4 class="font-medium text-slate-900">Endocrinologist</h4>
+                                    <p class="text-sm text-slate-600 mt-1">Diabetes prevention and metabolic health optimization.</p>
+                                    <span class="inline-block mt-2 text-xs bg-risk-medium text-white px-2 py-1 rounded-full">Medium Priority</span>
+                                </div>
+                                
+                                <div class="border-l-4 border-risk-medium pl-4">
+                                    <h4 class="font-medium text-slate-900">Registered Dietitian</h4>
+                                    <p class="text-sm text-slate-600 mt-1">Personalized nutrition plan for diabetes prevention.</p>
+                                    <span class="inline-block mt-2 text-xs bg-risk-low text-white px-2 py-1 rounded-full">Completed</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex justify-between mt-12">
+                        <button type="button" class="px-6 py-3 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors" data-event="click:goBack">
+                            Back to Risk Analysis
+                        </button>
+                        <button type="button" class="px-8 py-3 bg-health-primary text-white rounded-lg hover:bg-emerald-600 transition-colors" data-event="click:generateHealthPassport">
+                            Generate Health Passport
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Health Passport Generator Section -->
+            <section class="py-20 bg-slate-50" data-route="health-passport">
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="mb-8">
+                        <h2 class="text-3xl font-bold text-slate-900 mb-4">Your Digital Health Passport</h2>
+                        <p class="text-slate-600">A comprehensive summary of your genetic risk profile and health recommendations for easy sharing with healthcare providers.</p>
+                    </div>
+
+                    <!-- Health Passport Preview -->
+                    <div class="bg-white rounded-2xl shadow-lg p-8 mb-8" id="health-passport-content">
+                        <!-- Header -->
+                        <div class="border-b border-slate-200 pb-6 mb-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-2xl font-bold text-slate-900" data-bind="user.name">John Doe</h3>
+                                    <p class="text-slate-600" data-bind="user.details">Male, 32 years • Generated on March 15, 2024</p>
+                                </div>
+                                <div class="text-right">
+                                    <div class="w-20 h-20 bg-slate-100 rounded-lg flex items-center justify-center mb-2" data-implementation="QR Code using qrcode.react">
+                                        <!-- QR Code Placeholder -->
+                                        <div class="w-16 h-16 bg-slate-300 rounded"></div>
+                                    </div>
+                                    <p class="text-xs text-slate-500">Scan to view online</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Risk Summary -->
+                        <div class="mb-8">
+                            <h4 class="text-lg font-semibold text-slate-900 mb-4">Risk Assessment Summary</h4>
+                            <div class="grid grid-cols-2 gap-6">
+                                <div class="space-y-3">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm text-slate-600">Diabetes Type 2</span>
+                                        <span class="px-2 py-1 bg-risk-high text-white text-xs rounded-full">High (85%)</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm text-slate-600">Breast Cancer</span>
+                                        <span class="px-2 py-1 bg-risk-high text-white text-xs rounded-full">High (78%)</span>
+                                    </div>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm text-slate-600">Heart Disease</span>
+                                        <span class="px-2 py-1 bg-risk-medium text-white text-xs rounded-full">Medium (60%)</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm text-slate-600">Alzheimer's Disease</span>
+                                        <span class="px-2 py-1 bg-risk-low text-white text-xs rounded-full">Low (25%)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Family History Highlights -->
+                        <div class="mb-8">
+                            <h4 class="text-lg font-semibold text-slate-900 mb-4">Key Family History</h4>
+                            <div class="bg-slate-50 rounded-lg p-4">
+                                <ul class="space-y-2 text-sm text-slate-700">
+                                    <li>• Father: Type 2 Diabetes (diagnosed age 35)</li>
+                                    <li>• Sister: Breast Cancer (diagnosed age 25)</li>
+                                    <li>• Mother: No significant conditions reported</li>
+                                    <li>• Paternal history: Limited information available</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Current Health Status -->
+                        <div class="mb-8">
+                            <h4 class="text-lg font-semibold text-slate-900 mb-4">Current Health Profile</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="bg-slate-50 rounded-lg p-4 text-center">
+                                    <div class="text-2xl font-bold text-health-primary" data-bind="health.bmi">23.5</div>
+                                    <div class="text-sm text-slate-600">BMI (Normal)</div>
+                                </div>
+                                <div class="bg-slate-50 rounded-lg p-4 text-center">
+                                    <div class="text-2xl font-bold text-health-primary" data-bind="health.bloodPressure">120/80</div>
+                                    <div class="text-sm text-slate-600">Blood Pressure</div>
+                                </div>
+                                <div class="bg-slate-50 rounded-lg p-4 text-center">
+                                    <div class="text-2xl font-bold text-health-primary" data-bind="health.exerciseFreq">4x/week</div>
+                                    <div class="text-sm text-slate-600">Exercise Frequency</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Priority Recommendations -->
+                        <div class="mb-8">
+                            <h4 class="text-lg font-semibold text-slate-900 mb-4">Priority Actions</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center space-x-3 p-3 bg-red-50 rounded-lg border border-red-200">
+                                    <div class="w-2 h-2 bg-risk-high rounded-full"></div>
+                                    <span class="text-sm text-slate-700">Schedule genetic counseling for BRCA testing (Next 60 days)</span>
+                                </div>
+                                <div class="flex items-center space-x-3 p-3 bg-red-50 rounded-lg border border-red-200">
+                                    <div class="w-2 h-2 bg-risk-high rounded-full"></div>
+                                    <span class="text-sm text-slate-700">Annual diabetes screening (HbA1c, glucose tolerance test)</span>
+                                </div>
+                                <div class="flex items-center space-x-3 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                                    <div class="w-2 h-2 bg-risk-medium rounded-full"></div>
+                                    <span class="text-sm text-slate-700">Endocrinologist consultation for metabolic health</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information -->
+                        <div class="border-t border-slate-200 pt-6">
+                            <div class="text-center text-xs text-slate-500">
+                                <p>Generated by GeneGuard Smart Genetic Risk Tracker</p>
+                                <p>For questions or updates, contact your healthcare provider</p>
+                                <p class="mt-2 font-mono">ID: <span data-bind="passport.id">GG-JD-2024-001</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Export Options -->
+                    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                        <h3 class="text-lg font-semibold text-slate-900 mb-4">Export Options</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <button class="flex items-center justify-center space-x-2 p-4 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors" data-event="click:downloadPDF" data-implementation="Use html2canvas + jsPDF for PDF generation">
+                                <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                <span class="font-medium">Download PDF</span>
+                            </button>
+                            
+                            <button class="flex items-center justify-center space-x-2 p-4 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors" data-event="click:printPassport">
+                                <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                                </svg>
+                                <span class="font-medium">Print</span>
+                            </button>
+                            
+                            <button class="flex items-center justify-center space-x-2 p-4 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors" data-event="click:shareLink">
+                                <svg class="w-5 h-5 text-health-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                                </svg>
+                                <span class="font-medium">Share Link</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Doctor Sharing Section -->
+                    <div class="bg-gradient-to-r from-health-secondary to-health-primary rounded-xl p-6 text-white">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold">Share with Healthcare Provider</h3>
+                                <p class="text-blue-100 text-sm">Securely share your health passport with your doctor</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input type="email" placeholder="Doctor's email address" class="px-4 py-3 rounded-lg border border-blue-300 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-white">
+                            <button class="bg-white text-health-primary px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors" data-event="click:shareWithDoctor">
+                                Send Securely
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex justify-between mt-8">
+                        <button type="button" class="px-6 py-3 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors" data-event="click:goBack">
+                            Back to Recommendations
+                        </button>
+                        <button type="button" class="px-8 py-3 bg-health-primary text-white rounded-lg hover:bg-emerald-600 transition-colors" data-event="click:viewDoctorInterface">
+                            View Doctor Interface
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI Health Assistant (Floating Chat) -->
+            <div class="fixed bottom-6 right-6 z-50" data-component="AIHealthAssistant">
+                <!-- Chat Toggle Button -->
+                <button class="w-14 h-14 bg-health-primary text-white rounded-full shadow-lg hover:bg-emerald-600 transition-colors flex items-center justify-center chat-toggle" data-event="click:toggleChat" data-state="isOpen:boolean = false">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                    </svg>
+                </button>
+
+                <!-- Chat Window -->
+                <div class="absolute bottom-16 right-0 w-80 bg-white rounded-xl shadow-2xl border border-slate-200 hidden" id="chat-window" data-implementation="Show/hide based on chat toggle state">
+                    <!-- Chat Header -->
+                    <div class="bg-health-primary text-white p-4 rounded-t-xl">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">AI Health Assistant</h4>
+                                <p class="text-xs text-emerald-100">Online • Ask me anything about your health</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat Messages -->
+                    <div class="h-64 overflow-y-auto p-4 space-y-3" id="chat-messages">
+                        <!-- Bot Message -->
+                        <div class="flex items-start space-x-2">
+                            <div class="w-6 h-6 bg-health-primary rounded-full flex items-center justify-center flex-shrink-0">
+                                <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <div class="bg-slate-100 rounded-lg px-3 py-2 max-w-xs">
+                                <p class="text-sm text-slate-700">Hi! I'm your AI health assistant. I can help answer questions about your genetic risks, lifestyle recommendations, or general health concerns. What would you like to know?</p>
+                            </div>
+                        </div>
+
+                        <!-- Quick Action Buttons -->
+                        <div class="flex flex-wrap gap-2 px-8">
+                            <button class="text-xs bg-slate-100 text-slate-700 px-3 py-1 rounded-full hover:bg-slate-200 transition-colors" data-event="click:askPreset" data-question="diabetes-risk">
+                                What's my diabetes risk?
+                            </button>
+                            <button class="text-xs bg-slate-100 text-slate-700 px-3 py-1 rounded-full hover:bg-slate-200 transition-colors" data-event="click:askPreset" data-question="lifestyle-tips">
+                                Lifestyle tips
+                            </button>
+                            <button class="text-xs bg-slate-100 text-slate-700 px-3 py-1 rounded-full hover:bg-slate-200 transition-colors" data-event="click:askPreset" data-question="screening-schedule">
+                                Screening schedule
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Chat Input -->
+                    <div class="p-4 border-t border-slate-200">
+                        <div class="flex space-x-2">
+                            <input type="text" placeholder="Ask about your health..." class="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-health-primary focus:border-health-primary" data-bind="chatInput">
+                            <button class="bg-health-primary text-white p-2 rounded-lg hover:bg-emerald-600 transition-colors" data-event="click:sendMessage" data-implementation="Handle chat message sending with mock AI responses">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!-- @END_COMPONENT: LandingPage -->
+
+        <!-- Footer -->
+        <footer class="bg-slate-900 text-white py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <!-- Brand -->
+                    <div class="col-span-1">
+                        <div class="flex items-center space-x-2 mb-4">
+                            <div class="w-8 h-8 bg-health-primary rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <span class="text-xl font-bold">GeneGuard</span>
+                        </div>
+                        <p class="text-slate-400 text-sm">Empowering preventive health through genetic risk tracking and AI-powered insights.</p>
+                    </div>
+                    
+                    <!-- Quick Links -->
+                    <div>
+                        <h4 class="font-semibold mb-4">Features</h4>
+                        <ul class="space-y-2 text-sm text-slate-400">
+                            <li><a href="#" class="hover:text-white transition-colors">Family Tree Builder</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">Risk Analysis</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">Health Passport</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">AI Assistant</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Support -->
+                    <div>
+                        <h4 class="font-semibold mb-4">Support</h4>
+                        <ul class="space-y-2 text-sm text-slate-400">
+                            <li><a href="#" class="hover:text-white transition-colors">Help Center</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">Privacy Policy</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">Terms of Service</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">Contact Us</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Security -->
+                    <div>
+                        <h4 class="font-semibold mb-4">Security</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-2 text-sm text-slate-400">
+                                <svg class="w-4 h-4 text-health-primary" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span>HIPAA Compliant</span>
+                            </div>
+                            <div class="flex items-center space-x-2 text-sm text-slate-400">
+                                <svg class="w-4 h-4 text-health-primary" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span>End-to-End Encrypted</span>
+                            </div>
+                            <div class="flex items-center space-x-2 text-sm text-slate-400">
+                                <svg class="w-4 h-4 text-health-primary" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>SOC 2 Certified</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="border-t border-slate-800 mt-12 pt-8 text-center">
+                    <p class="text-slate-400 text-sm">&copy; 2024 GeneGuard. All rights reserved. This is a prototype for demonstration purposes.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <!-- @END_COMPONENT: App -->
+
+    <script>
+        // TODO: Replace with actual React implementation
+        // Mock JavaScript for demo interactions
+        
+        (function() {
+            // Chat functionality
+            const chatToggle = document.querySelector('.chat-toggle');
+            const chatWindow = document.getElementById('chat-window');
+            let isChatOpen = false;
+
+            if (chatToggle && chatWindow) {
+                chatToggle.addEventListener('click', function() {
+                    isChatOpen = !isChatOpen;
+                    chatWindow.classList.toggle('hidden', !isChatOpen);
+                });
+            }
+
+            // Mock form interactions
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('[data-event]')) {
+                    const eventData = e.target.closest('[data-event]').dataset.event;
+                    console.log('Mock event triggered:', eventData);
+                    
+                    // Show mock notifications for key actions
+                    if (eventData.includes('continueToFamilyTree')) {
+                        showNotification('Profile saved! Moving to family tree builder.');
+                    } else if (eventData.includes('continueToRiskAnalysis')) {
+                        showNotification('Family tree updated! Calculating genetic risks...');
+                    } else if (eventData.includes('generateHealthPassport')) {
+                        showNotification('Health passport generated successfully!');
+                    } else if (eventData.includes('downloadPDF')) {
+                        showNotification('PDF download started...');
+                    }
+                }
+            });
+
+            // Mock radio button interactions
+            document.addEventListener('change', function(e) {
+                if (e.target.type === 'radio') {
+                    // Update visual state for custom radio buttons
+                    const radioGroup = document.querySelectorAll(`input[name="${e.target.name}"]`);
+                    radioGroup.forEach(radio => {
+                        const indicator = radio.parentElement.querySelector('.w-2.h-2');
+                        if (indicator) {
+                            indicator.style.opacity = radio.checked ? '1' : '0';
+                        }
+                    });
+                }
+            });
+
+            // Simple notification system for demo
+            function showNotification(message) {
+                const notification = document.createElement('div');
+                notification.className = 'fixed top-4 right-4 bg-health-primary text-white px-6 py-3 rounded-lg shadow-lg z-50';
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            }
+
+            // Mock preset chat responses
+            const presetResponses = {
+                'diabetes-risk': 'Based on your family history, you have an 85% risk for diabetes. Your father was diagnosed at 35, which increases your risk. I recommend regular monitoring and lifestyle modifications.',
+                'lifestyle-tips': 'Here are key recommendations: 1) Reduce sugar intake by 50%, 2) Add 150 minutes of cardio weekly, 3) Include strength training 2x/week, 4) Practice stress management daily.',
+                'screening-schedule': 'Your recommended screenings: Diabetes screening every 6 months, breast cancer screening annually, cardiovascular check every 2 years, and comprehensive physical exam annually.'
+            };
+
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('[data-event="click:askPreset"]')) {
+                    const question = e.target.dataset.question;
+                    const chatMessages = document.getElementById('chat-messages');
+                    
+                    if (chatMessages && presetResponses[question]) {
+                        // Add user question
+                        const userMsg = document.createElement('div');
+                        userMsg.className = 'flex justify-end';
+                        userMsg.innerHTML = `
+                            <div class="bg-health-primary text-white rounded-lg px-3 py-2 max-w-xs">
+                                <p class="text-sm">${e.target.textContent}</p>
+                            </div>
+                        `;
+                        chatMessages.appendChild(userMsg);
+                        
+                        // Add bot response after a delay
+                        setTimeout(() => {
+                            const botMsg = document.createElement('div');
+                            botMsg.className = 'flex items-start space-x-2';
+                            botMsg.innerHTML = `
+                                <div class="w-6 h-6 bg-health-primary rounded-full flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <div class="bg-slate-100 rounded-lg px-3 py-2 max-w-xs">
+                                    <p class="text-sm text-slate-700">${presetResponses[question]}</p>
+                                </div>
+                            `;
+                            chatMessages.appendChild(botMsg);
+                            chatMessages.scrollTop = chatMessages.scrollHeight;
+                        }, 1000);
+                        
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

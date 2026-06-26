@@ -1,0 +1,135 @@
+Build a full-stack web prototype called GeneGuard – Smart Genetic Risk Tracker. The goal is to provide users with a tool to build a family medical history tree, assess genetic risk using AI logic, and receive personalized health insights.
+🔧 Use the following stack:
+
+    Frontend: React.js, Tailwind CSS for styling, React Router for navigation.
+
+    Backend (simulate if needed): Node.js or mock APIs with in-memory state.
+
+    Libraries:
+
+        recharts for risk visualization
+
+        qrcode.react for QR generation
+
+        html2canvas or jsPDF for health passport PDF export
+
+        uuid for generating unique user/family IDs
+
+        react-i18next for multilingual support
+
+🧩 Features to Build:
+1. Landing Page
+
+    Clean intro section with logo, tagline: “Track Genetic Risks. Empower Preventive Health.”
+
+    Language selection dropdown (simulate 2–3 options: English, Hindi, Bengali)
+
+    “Get Started” → leads to profile setup
+
+2. User Profile Setup
+
+    Collect:
+
+        Name, Age, Gender
+
+        Medical History: diabetes, cancer, heart disease, etc.
+
+        Lifestyle habits (smoking, diet, exercise level)
+
+3. Family Tree Builder
+
+    Allow adding multiple family members with:
+
+        Name, age, relation, medical history
+
+        Lifestyle factors
+
+    Display in visual format:
+
+        Use a card-based layout for each member
+
+        Optionally use drag-and-drop or collapsible tree structure (mock if limited)
+
+4. Risk Analysis Engine (Mock AI)
+
+    Use simple scoring rules:
+
+        For example: if 2+ first-degree relatives have diabetes → mark as “High Risk”
+
+    Generate scores for:
+
+        Diabetes | Heart Disease | Cancer | Other hereditary conditions
+
+    Display scores visually:
+
+        Use bar or pie charts
+
+        Color-coded: Red = High, Orange = Medium, Green = Low
+
+5. Personalized Recommendations
+
+    Based on risk:
+
+        Lifestyle tips (e.g., “Increase fiber intake”, “Annual cancer screening recommended”)
+
+        Screening schedules
+
+        Doctor consultation prompts
+
+    Add a card-based layout with icons and short descriptions
+
+6. Health Passport Generator
+
+    Let users export key data as a PDF
+
+        Name, risks, family tree summary, recommendations
+
+    Include a QR Code that links to a mock URL or report
+
+        Use qrcode.react library
+
+    Add option to Print or Download
+
+7. Doctor Sharing View
+
+    Create a page that simulates a doctor’s view:
+
+        Show user’s summary with risk and family health map
+
+        Include QR code and health history in one view
+
+        Add a “share digitally” mock button (copy link, download)
+
+8. Settings & Multilingual Support
+
+    Language preference (simulate at least 2 languages)
+
+    Account settings (mock only)
+
+    Option to export/delete data
+
+🔐 Privacy & Security Simulations
+
+    Add toggles for “Data Privacy” (simulate with checkboxes)
+
+    Use mock authentication screen (no real login needed)
+
+💡 Bonus Innovative Ideas to Add:
+
+    ✅ Preventive To-Do List: Auto-generated based on risk (e.g., “Book eye exam”, “Consult dietician”)
+
+    ✅ Family Timeline View: Scrollable timeline showing major health events by family member
+
+    ✅ Mock AI Chatbot: Simulate a chatbot (hardcoded Q&A) that answers user health queries
+
+✅ Final Touches for Judges:
+
+    Clean, responsive design (mobile-first)
+
+    Use color themes that imply health & trust (e.g., soft greens, blues)
+
+    Navigation bar or sidebar for easy flow: Home | Tree Builder | Risk | Passport | Share | Settings
+
+    Ensure user flow matches the PDF diagrams:
+
+        Step-by-step: onboarding → profile → family tree → risk → recommendation → passport → share
